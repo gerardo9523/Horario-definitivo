@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Rutina — Gerardo</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0E0E0E; --bg2:#141414; --bg3:#1C1C1C;
+  --border:#252525; --border2:#303030;
+  --text:#F0EBE1; --text2:#999; --text3:#555;
+  --gold:#C9A55A; --gold-d:#8B6B2A; --gold-bg:rgba(201,165,90,0.07);
+  --green:#4A9B6A; --green-bg:rgba(74,155,106,0.08);
+  --blue:#5A8EC9; --blue-bg:rgba(90,142,201,0.07);
+  --teal:#4A9B9B; --teal-bg:rgba(74,155,155,0.07);
+  --orange:#C97A3A; --orange-bg:rgba(201,122,58,0.07);
+  --purple:#9A6AC9; --purple-bg:rgba(154,106,201,0.07);
+  --red:#C96A5A; --radius:13px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;min-height:100vh;}
+.hdr{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:14px 16px 11px;}
+.hdr-r1{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px;}
+.hdate{font-family:'DM Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.htitle{font-family:'Instrument Serif',serif;font-size:21px;}
+.reset-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:100px;cursor:pointer;margin-top:2px;}
+.pb-wrap{display:flex;align-items:center;gap:10px;}
+.pb-bg{flex:1;height:3px;background:var(--border2);border-radius:100px;overflow:hidden;}
+.pb-fill{height:100%;background:linear-gradient(90deg,var(--gold-d),var(--gold));border-radius:100px;transition:width 0.35s;width:0%;}
+.pb-pct{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);min-width:34px;text-align:right;}
+.streak{display:flex;gap:5px;padding:12px 4px 2px;}
+.s-dot{flex:1;height:3px;border-radius:100px;background:var(--border2);}
+.s-dot.on{background:var(--gold);}
+.main{padding:8px 12px 110px;}
+.sec-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);padding:16px 4px 5px;}
+.blk{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:7px;overflow:hidden;transition:border-color 0.2s,opacity 0.2s;}
+.blk.done{opacity:0.42;}
+.blk-top{display:flex;align-items:center;gap:10px;padding:12px 13px;}
+.blk-icon{font-size:16px;min-width:24px;text-align:center;}
+.blk-info{flex:1;min-width:0;}
+.blk-name{font-weight:600;font-size:14px;line-height:1.2;margin-bottom:2px;}
+.blk.done .blk-name{color:var(--text3);}
+.blk-sub{display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.blk-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);}
+.blk-dur{font-size:10px;color:var(--text3);}
+.blk-dur::before{content:'·';margin-right:5px;}
+.cond-pill{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:100px;background:var(--bg3);border:1px solid var(--border2);color:var(--text3);}
+.chk{width:28px;height:28px;min-width:28px;border-radius:50%;border:2px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.18s;}
+.chk:active{transform:scale(0.85);}
+.chk .tick{display:none;font-size:12px;}
+.blk.done .chk{background:var(--green);border-color:var(--green);}
+.blk.done .chk .tick{display:block;color:#fff;}
+.exp-btn{background:none;border:none;color:var(--text3);font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;padding:0 4px;white-space:nowrap;}
+.blk-detail{display:none;border-top:1px solid var(--border);padding:12px 13px 14px;}
+.blk.open .blk-detail{display:block;}
+.blk.open{border-color:var(--border2);}
+.ex-card{background:var(--bg3);border-radius:9px;padding:11px 12px;margin-bottom:8px;}
+.ex-card:last-child{margin-bottom:0;}
+.ex-hdr{display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;}
+.ex-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);min-width:22px;padding-top:2px;}
+.ex-name{font-weight:600;font-size:13px;line-height:1.3;}
+.ex-params{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue);margin-bottom:5px;padding-left:30px;}
+.ex-how{font-size:11px;color:var(--text2);line-height:1.55;padding-left:30px;margin-bottom:4px;}
+.ex-feel{font-size:11px;color:var(--green);line-height:1.45;padding-left:30px;margin-bottom:3px;}
+.ex-feel::before{content:'✓ ';}
+.ex-avoid{font-size:11px;color:var(--red);line-height:1.45;padding-left:30px;}
+.ex-avoid::before{content:'✕ ';}
+.work-item{display:flex;gap:8px;font-size:12px;line-height:1.5;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);}
+.work-item:last-of-type{border-bottom:none;}
+.w-arr{color:var(--gold);min-width:14px;font-size:11px;padding-top:1px;}
+.w-bold{font-weight:600;color:var(--text);}
+.sub-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);padding:10px 0 5px;}
+.work-note{margin-top:10px;padding:9px 11px;border-radius:8px;font-size:11px;line-height:1.6;border-left:2px solid;}
+.blk[data-c="gold"]{--ac:var(--gold);--ab:var(--gold-bg);--ad:var(--gold-d);}
+.blk[data-c="green"]{--ac:var(--green);--ab:var(--green-bg);--ad:#2A6B40;}
+.blk[data-c="blue"]{--ac:var(--blue);--ab:var(--blue-bg);--ad:#2A5A8B;}
+.blk[data-c="teal"]{--ac:var(--teal);--ab:var(--teal-bg);--ad:#2A6B6B;}
+.blk[data-c="orange"]{--ac:var(--orange);--ab:var(--orange-bg);--ad:#8B4A20;}
+.blk[data-c="purple"]{--ac:var(--purple);--ab:var(--purple-bg);--ad:#6A3A9B;}
+.blk[data-c] .blk-name{color:var(--ac);}
+.blk[data-c].done .blk-name{color:var(--text3);}
+.blk[data-c] .chk{border-color:var(--ac);}
+.blk[data-c].done .chk{background:var(--ac);border-color:var(--ac);}
+.blk[data-c] .work-note{color:var(--ac);background:var(--ab);border-color:var(--ad);}
+.blk[data-c] .ex-num{color:var(--ac);}
+.banner{display:none;position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#0E1E0E;border:1px solid var(--green);border-radius:100px;padding:12px 24px;font-family:'Instrument Serif',serif;font-size:16px;color:var(--green);box-shadow:0 8px 40px rgba(0,0,0,0.7);z-index:300;white-space:nowrap;}
+.banner.show{display:block;animation:pop 0.35s ease;}
+@keyframes pop{from{transform:translateX(-50%) scale(0.8);opacity:0}to{transform:translateX(-50%) scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-r1">
+    <div><div class="hdate" id="hdate"></div><div class="htitle">Rutina del día</div></div>
+    <button class="reset-btn" onclick="resetDay()">↺ Nuevo día</button>
+  </div>
+  <div class="pb-wrap">
+    <div class="pb-bg"><div class="pb-fill" id="pbar"></div></div>
+    <div class="pb-pct" id="ppct">0%</div>
+  </div>
+</div>
+<div class="main" id="main"></div>
+<div class="banner" id="banner">🏆 Día completo</div>
+<script>
+const B=[
+{sec:"MAÑANA",id:"despertar",icon:"🌅",name:"Despertar",time:"07:30",dur:"5 min",color:"purple",
+items:[
+{t:"w",text:"Toma un vaso grande de agua con ½ cucharada de sal. Bébelo lento en los primeros 2 minutos."},
+{t:"w",text:"Sal al balcón o abre la ventana más grande. Mira hacia la luz al menos 30 segundos. No uses lentes de sol en este momento."},
+{t:"w",text:"Respiración nasal lenta 3–5 minutos. Inhala 4s, exhala 6s. Solo por la nariz."}]},
+
+{sec:"MAÑANA",id:"eje_vertical",icon:"📐",name:"Eje Vertical — Protocolo de Estatura",time:"07:35",dur:"20 min",color:"gold",
+note:"Hacerlo al despertar es crítico. Los discos están en su máxima hidratación tras 9h de sueño. No omitir ni reordenar los ejercicios.",
+exs:[
+{n:"01",name:"Colgado pasivo → activo",p:"3 × 30–45 seg · Descanso 30 seg",
+how:"Barra con agarre prono, ancho de hombros. Primeros 20s: cuelga completamente pasivo — deja que la gravedad jale la columna. Últimos 15s: activa levemente los omóplatos sin doblar los codos.",
+feel:"Estiramiento largo en toda la columna. Descompresión en la zona lumbar.",
+avoid:"No balancearte. No doblar los codos. No tensionar los hombros hacia las orejas."},
+{n:"02",name:"Chin tucks",p:"3 × 10 reps · 2 seg de hold",
+how:"De pie. Sin mover los hombros, empuja la barbilla hacia atrás como si quisieras crear una papada. El movimiento es HORIZONTAL — la cabeza no baja ni sube. Mantén 2s. Vuelve lento.",
+feel:"Tensión en la parte posterior del cuello bajo (C6–C7). Ligero estiramiento en la parte anterior.",
+avoid:"No inclinar la cabeza hacia abajo. No subir los hombros."},
+{n:"03",name:"Wall angel cervical",p:"2 × 30 seg posición + 10 reps movimiento",
+how:"De pie contra la pared: talones, glúteos, espalda alta y nuca. Si la nuca no llega: ese espacio es tu grado de FHP. Mantén 30s primero. Luego, sin perder el contacto, mueve los brazos en ángulo como ángel de nieve.",
+feel:"Corrección postural inmediata. La sensación de 'estar recto' es incómoda al principio — eso confirma que la postura era incorrecta.",
+avoid:"No perder el contacto de la nuca con la pared al mover los brazos."},
+{n:"04",name:"Cat-cow",p:"2 × 10 reps · 3 seg en cada extremo",
+how:"En cuatro puntos. INHALA: pelvis arriba, vientre al suelo, mirada al frente. EXHALA: pelvis abajo, espalda al techo, mentón al pecho. 3s en cada extremo.",
+feel:"Movilización de cada vértebra. Chasquidos suaves son normales.",
+avoid:"No hacer el movimiento rápido. Buscar el extremo de cada posición."},
+{n:"05",name:"Rotaciones torácicas",p:"2 × 8 reps por lado · 2 seg en el extremo",
+how:"Sentado con piernas cruzadas, brazos cruzados en el pecho. Rota el tronco hacia un lado lo más posible sin mover la pelvis. 2s en el extremo. Alterna lados.",
+feel:"Movilización de la columna torácica media.",
+avoid:"No mover la pelvis. El movimiento viene de la espalda media, no de los lumbares."},
+{n:"06",name:"Extensión torácica en foam roller",p:"2 posiciones × 60 seg · Mover 2–3 cm entre posiciones",
+how:"Foam roller HORIZONTAL en columna torácica media (entre los omóplatos — no en lumbar ni cuello). Brazos cruzados. Déjate caer hacia atrás lentamente. Respira profundo. Después de 60s, mueve el roller 2–3 cm hacia arriba y repite.",
+feel:"Presión en la zona torácica. Chasquidos son normales y deseables. Alivio progresivo.",
+avoid:"No en la zona lumbar. No en la cervical. Dejar que el peso del cuerpo haga el trabajo — no forzar."},
+{n:"07",name:"Retracción escapular",p:"2 × 15 reps · 3 seg de hold",
+how:"De pie. Lleva los omóplatos hacia atrás Y hacia abajo simultáneamente — como si los juntaras y metieras en los bolsillos traseros del pantalón. El pecho se abre naturalmente. 3s de hold. Suelta lento.",
+feel:"Contracción en romboides y trapecio inferior. Pecho se abre.",
+avoid:"No subir los hombros hacia las orejas. El movimiento hacia ABAJO es igual de importante que hacia atrás."},
+{n:"08",name:"Estiramiento escaleno / ECM",p:"2 × 30 seg por lado",
+how:"Sentado. Fija el hombro derecho hacia abajo sentándote sobre tu mano derecha o agarrando el borde de la silla. Inclina la cabeza hacia la izquierda hasta sentir tensión en el lado derecho del cuello. Rota la nariz levemente hacia arriba para afectar el ECM. 30s. Cambia de lado.",
+feel:"Estiramiento desde debajo de la oreja hasta el hombro — el músculo más tenso si tienes FHP.",
+avoid:"No forzar el rango. El hombro debe estar fijo abajo."},
+{n:"09",name:"Tibial anterior",p:"2 × 15 reps · 2 seg arriba",
+how:"De pie, apoyado en pared. Levanta los dedos del pie Y el metatarso del suelo manteniendo el talón pegado — dorsiflexión máxima. 2s arriba. Baja lento.",
+feel:"Contracción en la parte anterior de la tibia (paralela a la espinilla). Si no lo sientes ahí, el ejercicio no está bien ejecutado.",
+avoid:"No levantar el talón. No doblar la rodilla."},
+{n:"10",name:"Elevación de talón unilateral",p:"2 × 12 reps por pierna · 2s subiendo / 3s bajando",
+how:"Sobre el borde de un escalón, metatarso apoyado, talón en el aire. Baja el talón por debajo del nivel del escalón (estiramiento completo del gemelo). Sube lo más alto posible. 2s subiendo, 3s bajando. Una pierna a la vez.",
+feel:"Estiramiento profundo en el gemelo abajo. Contracción máxima arriba.",
+avoid:"No hacer el movimiento rápido. No apoyar el talón en el suelo entre reps."},
+{n:"11",name:"Band walks laterales",p:"2 × 12 pasos por lado · Sin descanso entre lados",
+how:"Banda en rodillas o tobillos. Media sentadilla: caderas atrás, espalda recta, rodillas alineadas con los pies. Pasos laterales manteniendo tensión en la banda. Rodillas no deben colapsar hacia adentro.",
+feel:"Quemado en el glúteo medio (lateral del glúteo). Si lo sientes en el cuádricep: posición incorrecta.",
+avoid:"Si las rodillas colapsan: banda demasiado pesada. Reducir resistencia."},
+{n:"12",name:"Dorsiflexión de tobillo",p:"2 × 10 reps por pie",
+how:"De pie frente a la pared a 5–10 cm. Dobla la rodilla hacia la pared sin levantar el talón. 2s en el extremo. Si tocas fácilmente: aléjate 1–2 cm. Si no llegas: acércate.",
+feel:"Estiramiento en el tobillo y parte posterior de la pantorrilla.",
+avoid:"No levantar el talón. No rotar el pie hacia afuera."}]},
+
+{sec:"MAÑANA",id:"bloque_fijo",icon:"💪",name:"Bloque Diario Fijo",time:"07:55",dur:"30 min",color:"green",
+exs:[
+{n:"→",name:"Respiración",p:"10–12 ciclos + apnea al final",
+how:"Sentado o de pie. Inhala profundo por la nariz, exhala completo por la boca. Después de los ciclos: exhala todo el aire y aguanta la apnea tanto como puedas sin forzar.",
+feel:"Activación del sistema nervioso. Ligero mareo al inicio es normal."},
+{n:"→",name:"Dominadas técnicas",p:"4–5 × 3–6 reps · Descanso 90 seg",
+how:"Agarre prono, ancho de hombros. Escápulas retraídas antes de tirar. Sube hasta que la barbilla supere la barra. Baja completamente controlado — 3s bajando.",
+avoid:"No balancearse. No subir con impulso. No bajar soltando el control."},
+{n:"→",name:"Flexiones",p:"2–3 × 12–20 reps · Descanso 60 seg",
+how:"Manos ligeramente más anchas que los hombros. Cuerpo en línea recta de cabeza a talones. Baja hasta que el pecho casi toque el suelo.",
+avoid:"No dejar caer las caderas. No subir solo hasta la mitad."},
+{n:"→",name:"Wall sit",p:"2–3 × 30–60 seg · Descanso 45 seg",
+how:"Espalda plana en la pared. Caderas y rodillas a 90°. Pies a ancho de caderas. Rodillas alineadas con los pies — no dejar que colapsen hacia adentro.",
+feel:"Quemado progresivo en cuádriceps."},
+{n:"→",name:"Movilidad corta",p:"5 minutos · Rotar entre las 3 zonas",
+how:"Tobillo: círculos 10 por lado. Cadera: rotaciones en cuatro puntos 8 por lado. Torácica: rotaciones sentado 8 por lado. Una ronda sin parar."}]},
+
+{sec:"MAÑANA",id:"facial_manana",icon:"🧊",name:"Facial Mañana",time:"08:25",dur:"10–12 min",color:"teal",
+note:"No más rostro hasta el bloque de tarde.",
+exs:[
+{n:"1",name:"Agua fría en rostro",p:"30 segundos · Sin jabón · Sin frotar",
+how:"Grifo en frío. Moja el rostro con las palmas — sin frotar, solo contacto suave. Repite 4–5 veces.",
+feel:"Vasoconstricción. La cara despierta.",
+avoid:"No frotar. No jabón."},
+{n:"2",name:"Hielo facial",p:"2 minutos exactos — NO MÁS",
+how:"Cubo envuelto en tela fina. Movimiento CONTINUO — nunca fijo. Recorrido: mejillas (30s) → mandíbula (30s) → zona orbital inferior / bajo los ojos (30s) → cuello frontal (30s).",
+feel:"Vasoconstricción, afinamiento inmediato, reducción de inflamación.",
+avoid:"Nunca el hielo fijo en un punto. No más de 2 minutos. No directamente en el ojo."},
+{n:"3",name:"Activación linfática suave",p:"3 minutos · Presión MÍNIMA · Ritmo lento",
+how:"Paso 1 (60s): Golpecitos suaves con yemas — frente → mejillas → mandíbula. Como tocar una pantalla muy suave. Paso 2 (60s): Deslizamientos desde el centro del rostro hacia las orejas. Paso 3 (60s): Desde las orejas, bajar por el cuello hasta las clavículas.",
+feel:"Activación y drenaje. El rostro se ve menos hinchado.",
+avoid:"Nunca presión fuerte. Siempre hacia los ganglios — nunca hacia arriba."},
+{n:"4",name:"Postura lingual",p:"1 minuto consciente",
+how:"Lengua COMPLETAMENTE apoyada en el paladar — toda la superficie. Mandíbula relajada. Dientes sin contacto. Labios juntos sin tensión. Mantener 1 minuto.",
+feel:"Activación de la musculatura facial correcta. Este es el modo facial del día.",
+avoid:"No apretar los dientes. No tensionar los labios."},
+{n:"5",name:"Chin tucks — refuerzo consciente",p:"3 × 10 reps · 2 seg hold",
+how:"Igual que en el eje vertical. Movimiento horizontal hacia atrás, no hacia abajo.",
+avoid:"No inclinar la cabeza hacia abajo."}]},
+
+{sec:"MAÑANA",id:"comida1",icon:"🍳",name:"Comida 1 + Exposición pasiva",time:"08:35",dur:"25 min",color:"orange",
+note:"25 min diarios = más de 12 horas de inmersión al mes sin costo cognitivo adicional.",
+items:[
+{t:"w",text:"Prepara y come la Comida 1."},
+{t:"w",text:"MIENTRAS COMES, elegir UNA opción:"},
+{t:"w",b:"Opción A:",text:" Leer 1 conversación real del corpus de Melanie. No analizar — solo leer y observar el lenguaje."},
+{t:"w",b:"Opción B:",text:" Leer 1 sección del banco de objeciones. Solo leer, no memorizar."}]},
+
+{sec:"TRABAJO — VENTAS",id:"bloque1_ventas",icon:"📚",name:"Bloque 1 — Sistema de Ventas",time:"09:00",dur:"2h 40min",color:"blue",
+note:"Desde el día 1 hay análisis activo con conversaciones reales. La proporción lectura/análisis cambia — el análisis no empieza en semana 3.",
+items:[
+{t:"s",text:"SEMANA 1–2"},
+{t:"w",b:"60 min — Lectura:",text:" En orden: Banco de Objeciones → Perfiles → Call Playbook → Documento Madre. Una sección por día."},
+{t:"w",b:"100 min — Análisis activo:",text:" Tomar 2–3 conversaciones reales de Melanie. PRIMERO: diagnosticar solo — ¿perfil emocional? ¿etapa? ¿objeción? ¿qué responderías? LUEGO: pegar en el Claude Project con las 3 líneas de contexto y verificar tu diagnóstico."},
+{t:"s",text:"SEMANA 3 EN ADELANTE"},
+{t:"w",b:"40 min — Lectura:",text:" Repasar secciones donde tuviste dudas esa semana."},
+{t:"w",b:"120 min — Análisis + Briefings:",text:" Analizar conversaciones recientes con el Project. Preparar briefings para las sesiones de Melanie del día siguiente. Simular tu pipeline: ¿qué harías tú diferente en cada lead de Melanie?"}]},
+
+{sec:"BOXEO",id:"mov_preboxeo",icon:"🥊",name:"Movilidad Pre-Boxeo",time:"11:40",dur:"20 min",color:"green",
+items:[
+{t:"w",text:"Movilidad hombros: círculos hacia adelante 10 reps, hacia atrás 10 reps. Cruce de brazos al pecho 10 reps."},
+{t:"w",text:"Cuerda de activación: 3–4 minutos a ritmo lento — activación, no cardio."},
+{t:"w",text:"Rotaciones de cuello: 5 círculos lentos cada dirección. Sin forzar el rango."}]},
+
+{sec:"BOXEO",id:"boxeo",icon:"🥊",name:"Boxeo",time:"12:00",dur:"60 min",color:"green",
+note:"Con corrección de genu varo activa: atención a alineación de rodillas en el footwork y en la posición base. Rodillas apuntan hacia los pies, nunca hacia adentro.",
+items:[{t:"w",text:"Sesión con coach según el plan del día."}]},
+
+{sec:"BOXEO",id:"shadow",icon:"👊",name:"Shadowboxing + Comida 3",time:"13:00",dur:"60 min",color:"green",
+items:[
+{t:"w",text:"Shadowboxing ~20–40 min a la salida del boxeo. Ritmo moderado — técnica, no cardio intenso."},
+{t:"w",text:"Comida 3 post-shadowboxing."}]},
+
+{sec:"TRABAJO — PRÁCTICA",id:"gpt",icon:"🎯",name:"Bloque 2 — Práctica Deliberada GPT",time:"14:00",dur:"2h (1h30 c/cardio)",color:"blue",
+note:"Semana 1: E1–E3 · Semana 2: E4–E6 · Semana 3: E7–E9 · Semana 4: E10 + los 3 más débiles.",
+items:[
+{t:"w",b:"10 min — Preparación:",text:" Abrir el GPT personalizado. Revisar el escenario del día en GPT_05. Leer el prompt específico. Tener claro qué criterio medir hoy."},
+{t:"w",b:"60–75 min — Roleplay:",text:" Pegar el prompt maestro, luego el del escenario. Activar modo voz si es posible. Usar PAUSA cuando algo sale mal — pedir retroalimentación inmediata. Usar PAUSA + REPETIR para volver a ese momento y practicarlo de nuevo."},
+{t:"w",b:"15–20 min — Análisis:",text:" Pegar el prompt de evaluación. Leer los 10 criterios. Identificar el criterio con menor puntaje."},
+{t:"w",b:"10 min — Registro:",text:" Anotar: fecha, escenario, criterio más débil, qué cambiar mañana."}]},
+
+{sec:"TRABAJO — PRÁCTICA",id:"cardio",icon:"🏃",name:"Cardio — trote moderado",time:"15:30",dur:"30 min",color:"green",cond:"L / MIÉ / VIE",
+items:[
+{t:"w",text:"Trote a ritmo de conversación — si no puedes hablar en frases completas, vas demasiado rápido."},
+{t:"w",text:"Días SIN cardio: el bloque GPT se extiende a 2h completas. No dejar ese tiempo libre."}]},
+
+{sec:"TRABAJO — PRÁCTICA",id:"comida4",icon:"🍽️",name:"Comida 4 + Descanso activo",time:"16:00",dur:"30 min",color:"orange",
+items:[
+{t:"w",text:"Comida 4."},
+{t:"w",text:"Días con cardio: mover comida a las 4:00 PM post-trote."},
+{t:"w",text:"Descanso activo: caminar, estiramiento ligero. Sin pantalla si es posible."}]},
+
+{sec:"GIMNASIO",id:"mov_pregym",icon:"🔄",name:"Movilidad Pre-Gimnasio",time:"16:30",dur:"30 min",color:"green",
+items:[
+{t:"w",b:"Tobillos (10 min):",text:" Dorsiflexión contra pared — igual que ejercicio 12 del eje vertical. 2×10 por pie. Prepara el tobillo para los split squats."},
+{t:"w",b:"Caderas (10 min):",text:" Rotaciones en cuatro puntos 8 por lado. 90/90 hip stretch 30s por lado."},
+{t:"w",b:"Hombros (10 min):",text:" Rotaciones con banda o palo. Círculos de brazo completo 10 por lado."}]},
+
+{sec:"GIMNASIO",id:"gym",icon:"🏋️",name:"Gimnasio",time:"17:00",dur:"75 min",color:"green",
+note:"Bulgarian split squats e hip thrusts son prioritarios — activan glúteo medio con mayor efectividad que el leg press bilateral y complementan la corrección de genu varo.",
+items:[
+{t:"w",text:"Sesión según la rutina semanal asignada."},
+{t:"w",b:"En cualquier ejercicio de pierna:",text:" verificar que las rodillas apunten hacia los pies. No dejar que colapsen hacia adentro."}]},
+
+{sec:"GIMNASIO",id:"postural",icon:"🦵",name:"Bloque Postural Post-Gym",time:"18:15",dur:"10 min",color:"gold",
+note:"Con los músculos calientes y activados, este bloque es más efectivo que el mismo trabajo en frío.",
+exs:[
+{n:"→",name:"Band walks — refuerzo",p:"2 × 12 pasos por lado",
+how:"Igual que en el eje vertical. Con el entrenamiento encima, el glúteo medio ya está activado — el trabajo es más profundo.",
+feel:"Glúteo medio más activado que en la mañana."},
+{n:"→",name:"Tibial anterior — refuerzo",p:"2 × 15 reps",
+how:"Igual que en el eje vertical. Verificar que la contracción sigue siendo correcta."},
+{n:"→",name:"Estiramiento de aductores",p:"2 × 45 seg por lado",
+how:"Sentado en el suelo, planta de los pies juntas, rodillas hacia los lados. Presiona suavemente las rodillas hacia el suelo con los codos. Los aductores tensos contribuyen al colapso interno de rodilla."}]},
+
+{sec:"GIMNASIO",id:"facial_tarde",icon:"💆",name:"Facial Tarde",time:"18:25",dur:"8–10 min",color:"teal",
+note:"Los isométricos mandibulares SOLO los días lunes, miércoles y viernes.",
+exs:[
+{n:"6",name:"Isométricos de cuello",p:"4 minutos · Intensidad MÁXIMO 30–40%",
+how:"A — FRONTAL: Palma en la frente. Empuja la cabeza hacia adelante con el cuello mientras la mano resiste sin ceder. 10s × 3 reps. B — LATERAL IZQ: Palma en la sien izquierda. Empuja la cabeza hacia la izquierda mientras la mano resiste. 10s × 3 reps. C — LATERAL DER: Igual al otro lado. D — POSTERIOR: Manos entrelazadas en la nuca. Empuja la cabeza hacia atrás mientras las manos resisten. 10s × 3 reps.",
+feel:"Activación profunda de los músculos del cuello sin movimiento articular.",
+avoid:"NUNCA al 100%. Máximo 30–40% de intensidad. Si hay dolor: reducir más."},
+{n:"7",name:"Isométricos mandibulares",p:"3 min · SOLO LUN / MIÉ / VIE · 5 × 10 seg",
+how:"Puño o palma bajo el mentón. Intenta abrir la boca MUY suavemente — como si quisieras abrirla pero la mano resiste. 10s de tensión isométrica. Suelta completamente. 5 reps.",
+avoid:"NUNCA apretar los dientes. NUNCA si hay dolor. NUNCA más de 3 días/semana."},
+{n:"8",name:"Liberación de maseteros",p:"2–3 min · 60–90 seg por lado",
+how:"Dos dedos (índice y medio) justo delante de la oreja, en la parte alta de la mandíbula. Presión circular LENTA — círculos de 1–2 cm. Baja lentamente por el músculo. 60–90s por lado.",
+feel:"Tensión o ligero dolor si el músculo está contracturado — se libera con la presión sostenida.",
+avoid:"No en el hueso. Solo en el tejido blando muscular."}]},
+
+{sec:"GIMNASIO",id:"comida5",icon:"🍽️",name:"Comida 5",time:"18:45",dur:"15 min",color:"orange",
+items:[{t:"w",text:"Comida 5. Priorizar proteína + carbohidratos para recuperación post-entrenamiento."}]},
+
+{sec:"TRABAJO — OPERACIÓN",id:"bloque3_melanie",icon:"📞",name:"Bloque 3 — Operación con Melanie",time:"19:00",dur:"2h",color:"blue",
+note:"No estudio — operación real. Total trabajo activo con el sistema en el día: ~4 horas.",
+items:[
+{t:"w",b:"Revisar:",text:" Conversaciones del día de Melanie. ¿Hubo mensajes nuevos? ¿Algún lead avanzó? ¿Alguno se enfrió?"},
+{t:"w",b:"Análisis activo:",text:" Para cada conversación relevante: pegar en el Claude Project con las 3 líneas de contexto (fuente / etapa / historial). Analizar el diagnóstico y la respuesta propuesta."},
+{t:"w",b:"Respuestas:",text:" Si Melanie necesita respuestas: preparar el texto exacto listo para copiar y enviar."},
+{t:"w",b:"Banco:",text:" Si apareció un patrón nuevo o una objeción no documentada: añadirla al banco con respuesta, eliminados y evidencia."},
+{t:"w",b:"Briefing de mañana:",text:" Identificar qué leads tienen sesión o seguimiento mañana. Preparar el briefing pre-sesión."},
+{t:"w",b:"Simulación:",text:" Tomar 2–3 leads de Melanie y trabajar mentalmente qué harías tú en cada paso. Cuando lleguen tus leads reales, no llegás desde cero."}]},
+
+{sec:"NOCHE",id:"descomp",icon:"🌙",name:"Descompresión Nocturna",time:"21:00",dur:"15 min",color:"gold",
+note:"El colgado nocturno descarga la compresión acumulada durante el día antes de que la columna entre en reposo para rehidratarse. Doble colgado (mañana + noche) = mayor ganancia acumulada.",
+exs:[
+{n:"→",name:"Colgado pasivo",p:"2 × 30 seg · Descanso 20 seg",
+how:"Igual que el ejercicio 01 del eje vertical pero solo la fase pasiva. Colgar y descomprimir.",
+feel:"Alivio inmediato de la tensión lumbar acumulada en el día."},
+{n:"→",name:"Movilidad torácica ligera",p:"5 minutos",
+how:"Cat-cow suave — 5 reps. Rotaciones torácicas sentado — 5 por lado. Ritmo lento, sin forzar."},
+{n:"→",name:"Respiración nasal lenta",p:"5 minutos",
+how:"Inhala 4s por la nariz. Exhala 6s por la nariz. Foco en alargar la exhalación — activa el sistema parasimpático y prepara el cuerpo para el sueño."}]},
+
+{sec:"NOCHE",id:"facial_noche",icon:"🌿",name:"Facial Noche",time:"21:15",dur:"12–15 min",color:"teal",
+exs:[
+{n:"9",name:"Limpieza",p:"1 minuto",
+how:"Jabón de glicerina + agua tibia. Aplica con yemas en círculos suaves. Enjuaga con agua tibia. Seca dando toquecitos suaves — sin frotar.",
+avoid:"No frotar con la toalla. Jabón negro solo 1–2 veces/semana, de noche."},
+{n:"10",name:"Drenaje linfático profundo",p:"6 minutos · Presión MÍNIMA · Siempre hacia los ganglios",
+how:"Paso 1 (1 min): Centro de la frente → sienes. Paso 2 (2 min): Centro de las mejillas → orejas. Paso 3 (2 min): Centro de la mandíbula → orejas siguiendo el ángulo mandibular. Paso 4 (1 min): Desde las orejas, bajar por el cuello hasta las clavículas. SIEMPRE termina en las clavículas.",
+feel:"Sensación de drenaje y alivio. El rostro se ve más definido.",
+avoid:"Nunca presión fuerte. Nunca hacia arriba."},
+{n:"11",name:"Estiramiento cervical",p:"3 minutos",
+how:"A — MIRAR AL TECHO: Extiende el cuello hacia atrás hasta mirar al techo. Mantén 10s. 5 repeticiones. B — INCLINACIÓN LATERAL: Inclina la cabeza hacia el hombro derecho, mano derecha añade peso suave. 10s. 3 reps por lado.",
+feel:"Estiramiento en la parte anterior del cuello y los laterales.",
+avoid:"No rotar el cuello — solo extensión e inclinación. No forzar el rango."},
+{n:"12",name:"Relajación neuromuscular",p:"2–3 minutos · Transición al sueño",
+how:"Sentado o recostado. Inhala 4s por la nariz, exhala 8s por la nariz. Mandíbula completamente suelta — deja que los dientes se separen levemente. Lengua apoyada en el paladar sin tensión. Frente relajada.",
+feel:"Estado de calma profunda. Este es el estado facial correcto para dormir."}]},
+
+{sec:"NOCHE",id:"cierre",icon:"📋",name:"Cierre del Día",time:"21:30",dur:"30 min",color:"purple",
+items:[
+{t:"w",b:"5 min — Ventas:",text:" ¿Qué escenario GPT practicar mañana? ¿Qué sección estudiar? ¿Qué conversación de Melanie analizar en el bloque 1?"},
+{t:"w",b:"5 min — Revisión:",text:" ¿Qué salió bien en la práctica de hoy? ¿Cuál fue el momento más difícil del roleplay? ¿Qué criterio del scorecard fue el más débil?"},
+{t:"w",b:"Preparación:",text:" Oscurecer la habitación. Temperatura fresca. Sin pantallas brillantes en los últimos 15 minutos."}]},
+
+{sec:"NOCHE",id:"sueno",icon:"😴",name:"Sueño — 9 horas",time:"22:30",dur:"9h",color:"purple",
+note:"Las 9h de sueño son cuando los discos intervertebrales se rehidratan al máximo — el periodo más crítico para la ganancia de altura. No negociar.",
+items:[
+{t:"w",text:"Dormir a las 22:30. Despertar a las 07:30."},
+{t:"w",text:"Posición ideal: de lado o boca arriba. Evitar boca abajo — añade tensión cervical y comprime la columna."}]}
+];
+
+const KEY='rut_g_v4',DKEY='rut_d_v4',SKEY='rut_s_v4';
+function iso(){return new Date().toISOString().split('T')[0];}
+function dstr(){return new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'}).toUpperCase();}
+function load(){
+  const s=localStorage.getItem(KEY),d=localStorage.getItem(DKEY),t=iso();
+  if(d!==t){
+    const p=s?JSON.parse(s):{};
+    const all=B.map(b=>b.id);
+    const done=all.every(id=>p[id]);
+    const str=JSON.parse(localStorage.getItem(SKEY)||'[]');
+    if(done&&d){str.push(d);if(str.length>7)str.shift();localStorage.setItem(SKEY,JSON.stringify(str));}
+    localStorage.setItem(DKEY,t);localStorage.setItem(KEY,'{}');return{};
+  }
+  return s?JSON.parse(s):{};
+}
+function save(s){localStorage.setItem(KEY,JSON.stringify(s));}
+let state=load();
+
+function buildDetail(b){
+  let h='';
+  if(b.exs){
+    b.exs.forEach(e=>{
+      h+=`<div class="ex-card">
+        <div class="ex-hdr"><span class="ex-num">${e.n}</span><span class="ex-name">${e.name}</span></div>
+        ${e.p?`<div class="ex-params">${e.p}</div>`:''}
+        ${e.how?`<div class="ex-how">${e.how}</div>`:''}
+        ${e.feel?`<div class="ex-feel">${e.feel}</div>`:''}
+        ${e.avoid?`<div class="ex-avoid">${e.avoid}</div>`:''}
+      </div>`;
+    });
+  }
+  if(b.items){
+    b.items.forEach(i=>{
+      if(i.t==='s'){h+=`<div class="sub-lbl">${i.text}</div>`;}
+      else{h+=`<div class="work-item"><span class="w-arr">→</span><span>${i.b?`<span class="w-bold">${i.b}</span> `:''  }${i.text}</span></div>`;}
+    });
+  }
+  if(b.note){h+=`<div class="work-note">${b.note}</div>`;}
+  return h;
+}
+
+function render(){
+  document.getElementById('hdate').textContent=dstr();
+  const main=document.getElementById('main');
+  main.innerHTML='';
+  const str=JSON.parse(localStorage.getItem(SKEY)||'[]');
+  let sh='<div class="streak">';
+  for(let i=0;i<7;i++)sh+=`<div class="s-dot${i<str.length?' on':''}"></div>`;
+  sh+='</div>';
+  main.innerHTML=sh;
+  let cs='';
+  B.forEach(b=>{
+    if(b.sec!==cs){cs=b.sec;main.innerHTML+=`<div class="sec-lbl">${b.sec}</div>`;}
+    const done=!!state[b.id];
+    const det=buildDetail(b);
+    const hasDet=det.trim().length>0;
+    const el=document.createElement('div');
+    el.className=`blk${done?' done':''}`;
+    el.dataset.id=b.id;
+    if(b.color)el.dataset.c=b.color;
+    el.innerHTML=`
+      <div class="blk-top">
+        <div class="blk-icon">${b.icon}</div>
+        <div class="blk-info">
+          <div class="blk-name">${b.name}</div>
+          <div class="blk-sub">
+            <span class="blk-time">${b.time}</span>
+            <span class="blk-dur">${b.dur}</span>
+            ${b.cond?`<span class="cond-pill">${b.cond}</span>`:''}
+          </div>
+        </div>
+        ${hasDet?`<button class="exp-btn" onclick="toggleExp(event,'${b.id}')">ver</button>`:''}
+        <div class="chk" onclick="chk(event,'${b.id}')"><span class="tick">✓</span></div>
+      </div>
+      ${hasDet?`<div class="blk-detail">${det}</div>`:''}`;
+    main.appendChild(el);
+  });
+  updatePb();
+}
+
+function chk(e,id){e.stopPropagation();state[id]=!state[id];save(state);const el=document.querySelector(`.blk[data-id="${id}"]`);if(el)el.classList.toggle('done',!!state[id]);updatePb();}
+
+function toggleExp(e,id){
+  e.stopPropagation();
+  const el=document.querySelector(`.blk[data-id="${id}"]`);
+  if(!el)return;
+  const was=el.classList.contains('open');
+  document.querySelectorAll('.blk.open').forEach(b=>{b.classList.remove('open');const btn=b.querySelector('.exp-btn');if(btn)btn.textContent='ver';});
+  if(!was){el.classList.add('open');const btn=el.querySelector('.exp-btn');if(btn)btn.textContent='cerrar';setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);}
+}
+
+function updatePb(){
+  const t=B.length,d=B.filter(b=>state[b.id]).length,p=Math.round(d/t*100);
+  document.getElementById('pbar').style.width=p+'%';
+  document.getElementById('ppct').textContent=p+'%';
+  if(p===100){const ban=document.getElementById('banner');ban.classList.add('show');setTimeout(()=>ban.classList.remove('show'),3000);}
+}
+
+function resetDay(){if(confirm('¿Reiniciar todos los checks del día?')){state={};save(state);render();}}
+render();
+</script>
+</body>
+</html>
